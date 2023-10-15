@@ -3,6 +3,7 @@ package br.com.alura.alugames.principal
 import br.com.alura.alugames.modelo.Gamer
 import br.com.alura.alugames.modelo.Jogo
 import br.com.alura.alugames.servicos.ConsumoApi
+import transformarEmIdade
 import java.util.Scanner
 
 
@@ -11,6 +12,7 @@ fun main() {
     val gamer = Gamer.criarGamer(leitura)
     println("Cadastro concluído com sucesso")
     println(gamer)
+    println("Idade do gamer: " + gamer.dataNascimento?.transformarEmIdade())
 
     do {
         println("Digite um código de jogo para buscar: ")
@@ -54,5 +56,25 @@ fun main() {
     gamer.jogosBuscados.forEach {
         println("Titulo: " + it?.titulo)
     }
+
+    val jogosFiltrados = gamer.jogosBuscados.filter {
+        it?.titulo?.contains("batman", true) ?: false
+    }
+    println("Jogos filtrados")
+    println(jogosFiltrados)
+
+    println("Deseja excluir algum jogo da lista original? s/n")
+    val opcao = leitura.nextLine()
+    if (opcao.equals("s", true)){
+        println("Informe a posição do jogo que deseja excluir: ")
+        val posicao = leitura.nextInt()
+        gamer.jogosBuscados.removeAt(posicao)
+    }
+
+    println("Lista atualizada: ")
+    gamer.jogosBuscados.forEach {
+        println("Titulo: " + it?.titulo)
+    }
+
     println("Busca finalizada com sucesso.")
 }

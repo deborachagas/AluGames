@@ -16,7 +16,7 @@ fun main() {
     gamer1.usuario = "teste"
     println(gamer1)
 
-    val gamer2 = Gamer(" ", "debora@email.com", "01/01/2000", "darcbr")
-
-    println(gamer2)
+//    val gamer2 = Gamer(" ", "debora@email.com", "01/01/2000", "darcbr")
+//
+//    println(gamer2)
 }

@@ -4,8 +4,9 @@ import java.lang.IllegalArgumentException
 import java.util.Scanner
 import kotlin.random.Random
 
-data class Gamer(var nome:String, var email:String){
+data class Gamer(var nome:String, var email:String): Recomendavel {
     var dataNascimento:String? = null
+    var id = 0
 
     var usuario:String? = null
         set(value) {
@@ -17,13 +18,26 @@ data class Gamer(var nome:String, var email:String){
 
     var idInterno:String? = null
         private set
-
+    var plano: Plano = PlanoAvulso("BRONZE")
     val jogosBuscados = mutableListOf<Jogo?>()
+    val jogosAlugados = mutableListOf<Aluguel>()
+    private val listaNotas = mutableListOf<Int>()
+    val jogosRecomendados = mutableListOf<Jogo>()
+    override val media: Double
+        get() = listaNotas.average()
 
-    constructor(nome: String, email: String, dataNascimento: String, usuario: String):
+    override fun recomendar(nota: Int) {
+        listaNotas.add(nota)
+    }
+    fun recomendarJogo(jogo: Jogo, nota: Int){
+        jogo.recomendar(nota)
+        jogosRecomendados.add(jogo)
+    }
+    constructor(nome: String, email: String, dataNascimento: String?, usuario: String?, id: Int = 0):
             this(nome, email) {
                 this.dataNascimento = dataNascimento
                 this.usuario = usuario
+                this.id = id
         criarIdInterno()
             }
 
@@ -35,7 +49,15 @@ data class Gamer(var nome:String, var email:String){
     }
 
     override fun toString(): String {
-        return "Gamer(nome='$nome', email='$email', dataNascimento=$dataNascimento, usuario=$usuario, idInterno=$idInterno)"
+        return "Gamer(" +
+                "Id: $id \n" +
+                "nome: $nome\n" +
+                "email: $email\n" +
+                "dataNascimento: $dataNascimento\n" +
+                "usuario: $usuario\n" +
+                "idInterno: $idInterno\n" +
+                "reputação: ${this.mediaFormatada()}\n" +
+                ")"
     }
 
     fun criarIdInterno(){
@@ -73,5 +95,18 @@ data class Gamer(var nome:String, var email:String){
                 return Gamer (nome, email)
             }
         }
+    }
+
+    fun alugaJogo(jogo: Jogo, periodo: Periodo): Aluguel {
+        val aluguel = Aluguel(this, jogo, periodo)
+        jogosAlugados.add(aluguel)
+        return aluguel
+    }
+
+    fun alugueisMes(mes: Int): List<Aluguel> {
+        val alugueisMes = this.jogosAlugados.filter {
+            it.periodo.dataInicial.monthValue == mes
+        }
+        return alugueisMes
     }
 }
